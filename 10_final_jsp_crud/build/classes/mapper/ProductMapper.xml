@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ProductMapper">
+<sql id="pno_cond">
+	where pno = #{pno}
+</sql>
+	<insert id="reg" parameterType="pvo">
+		insert into product 
+		(pname, price, made_by, writer, category, description, image_file)
+		values 
+		(#{pname},#{price},#{madeBy},#{writer},#{category},#{description},#{imageFile})
+	</insert>
+	<select id="list" resultType="pvo">
+		select pno, pname, price, writer, mod_at, read_count, image_file
+		from product order by pno desc
+	</select>
+	<select id="detail" parameterType="long" resultType="pvo">
+		select * from product
+		<include refid="pno_cond"/> 
+	</select>
+	<update id="mod" parameterType="pvo">
+		update product set
+		pname = #{pname}, price = #{price},
+		made_by = #{madeBy}, category = #{category},
+		description = #{description},
+		image_file = #{imageFile}, read_count = read_count - 2
+		<include refid="pno_cond"/>
+	</update>
+	<delete id="del" parameterType="long">
+		delete from product
+		<include refid="pno_cond"/>
+	</delete>
+	<update id="rc" parameterType="long">
+		update product set
+		read_count = read_count + 1
+		<include refid="pno_cond"/>
+	</update>
+</mapper>
